@@ -1,6 +1,5 @@
 package com.nexign.amqp;
 
-import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.RuntimeService;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -20,7 +19,7 @@ public class AmqpReciever {
     public void callBackBSS(String callBack){
         System.out.println(callBack);
         processEngine.createMessageCorrelation("RabbitCallBack") //
-                .processInstanceVariableEquals("123", callBack) //
+                .processInstanceId(callBack) //
 //                .setVariable(ProcessConstants.VAR_NAME_shipmentId, shipmentId) //
                 .correlateWithResult();
         //RabbitCallBack
