@@ -4,6 +4,6 @@ camunda.bpm.admin-user:
   id: andrey
   password: andrey
 
-spring:
-  rabbitmq:
-    host: "192.168.0.127"
+#spring:
+#  rabbitmq:
+#    host: "192.168.0.127"

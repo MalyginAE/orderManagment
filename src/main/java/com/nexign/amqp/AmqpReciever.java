@@ -13,8 +13,8 @@ public class AmqpReciever {
     @Autowired
     private RuntimeService processEngine ;
     @RabbitListener(bindings = @QueueBinding( //
-            value = @Queue(value = "BSS", durable = "true"), //
-            exchange = @Exchange(value = "bss", type = "topic", durable = "true"), //
+            value = @Queue(value = "BSS"), //
+            exchange = @Exchange(value = "bss", type = "topic"), //
             key = "*"))
     public void callBackBSS(String callBack){
         System.out.println(callBack);
