@@ -10,7 +10,7 @@ public class CoverageTestConfiguration {
     @Bean
     public ProcessEngineCoverageProperties processEngineCoverageProperties() {
         return ProcessEngineCoverageProperties.builder()
-                .assertClassCoverageAtLeast(0.8)
+                .assertClassCoverageAtLeast(0.5)
                 .build();
     }
 
