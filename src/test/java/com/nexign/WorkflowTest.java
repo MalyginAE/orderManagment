@@ -7,6 +7,7 @@ import org.camunda.bpm.extension.process_test_coverage.spring_test.ProcessEngine
 import org.camunda.bpm.spring.boot.starter.test.helper.AbstractProcessEngineRuleTest;
 
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 
 public class WorkflowTest {
+  private static final String processDefinitionKey = "OrderManagement-process";
 
 
   @Autowired
@@ -34,10 +36,9 @@ public class WorkflowTest {
   @Test
   public void shouldExecuteHappyPath() {
     // given
-    String processDefinitionKey = "OrderManagement-process";
+    ProcessInstance processInstance =runtimeService.startProcessInstanceByKey(processDefinitionKey);;
 
     // when
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinitionKey);
 
     // then
    //assertTrue(true);
@@ -47,6 +48,12 @@ public class WorkflowTest {
 //            .hasDefinitionKey("say-hello")
 //            .hasCandidateUser("andrey")
 //            .isNotAssigned();
+  }
+
+  @Test
+  public void processIsActive(){
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinitionKey);
+    assertThat(processInstance).isActive();
   }
 
 }

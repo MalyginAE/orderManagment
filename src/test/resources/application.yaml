@@ -5,3 +5,8 @@ spring:
 camunda.bpm.admin-user:
   id: andrey
   password: andrey
+
+camunda:
+  bpm:
+    job-execution:
+      enabled: false
