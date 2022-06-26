@@ -1,4 +1,4 @@
-package com.nexign;
+package com.nexign.config;
 
 import org.camunda.bpm.extension.process_test_coverage.spring_test.ProcessEngineCoverageProperties;
 import org.springframework.boot.test.context.TestConfiguration;

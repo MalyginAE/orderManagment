@@ -11,7 +11,7 @@ public class ThrowsError implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
         System.out.println("Hi");
-        throw new Exception();
+        throw new Exception("Какая то ошибка");
         //throw new BpmnError("1");
     }
 }
