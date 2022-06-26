@@ -67,6 +67,13 @@
       <version>1.0.3</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.camunda.bpm.extension.scenario</groupId>
+      <artifactId>camunda-platform-scenario-runner</artifactId>
+      <version>2.0.0.alpha.2</version>
+      <scope>test</scope>
+    </dependency>
 <!--    <dependency>-->
 <!--      <groupId>org.camunda.community.process_test_coverage</groupId>-->
 <!--      <artifactId>camunda-process-test-coverage-spring-test-platform-7</artifactId>-->
@@ -97,6 +104,12 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.3.5</version>
     </dependency>
 
 <!--    <dependency>-->

@@ -1,25 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_00wl83q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_00wl83q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:process id="Process_0345ai9" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
-      <bpmn:outgoing>Flow_00amgnd</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1kmxs7t</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:endEvent id="Event_079tpyh">
-      <bpmn:incoming>Flow_00amgnd</bpmn:incoming>
+    <bpmn:sequenceFlow id="Flow_1kmxs7t" sourceRef="StartEvent_1" targetRef="Activity_1f8yc61" />
+    <bpmn:endEvent id="Event_1r7p379">
+      <bpmn:incoming>Flow_1hda9fx</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_00amgnd" sourceRef="StartEvent_1" targetRef="Event_079tpyh" />
+    <bpmn:serviceTask id="Activity_1f8yc61" name="CompleteWork" camunda:asyncBefore="true" camunda:delegateExpression="${throwsError}">
+      <bpmn:extensionElements>
+        <camunda:failedJobRetryTimeCycle>R3/PT1M</camunda:failedJobRetryTimeCycle>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1kmxs7t</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rptm0s</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1rptm0s" sourceRef="Activity_1f8yc61" targetRef="Activity_14yi8ka" />
+    <bpmn:userTask id="Activity_14yi8ka">
+      <bpmn:incoming>Flow_1rptm0s</bpmn:incoming>
+      <bpmn:outgoing>Flow_1hda9fx</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1hda9fx" sourceRef="Activity_14yi8ka" targetRef="Event_1r7p379" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_0345ai9">
-      <bpmndi:BPMNEdge id="Flow_00amgnd_di" bpmnElement="Flow_00amgnd">
+      <bpmndi:BPMNEdge id="Flow_1kmxs7t_di" bpmnElement="Flow_1kmxs7t">
         <di:waypoint x="215" y="97" />
-        <di:waypoint x="302" y="97" />
+        <di:waypoint x="270" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rptm0s_di" bpmnElement="Flow_1rptm0s">
+        <di:waypoint x="370" y="97" />
+        <di:waypoint x="430" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hda9fx_di" bpmnElement="Flow_1hda9fx">
+        <di:waypoint x="530" y="97" />
+        <di:waypoint x="652" y="97" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="79" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_079tpyh_di" bpmnElement="Event_079tpyh">
-        <dc:Bounds x="302" y="79" width="36" height="36" />
+      <bpmndi:BPMNShape id="Activity_0wp5imo_di" bpmnElement="Activity_1f8yc61">
+        <dc:Bounds x="270" y="57" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1r7p379_di" bpmnElement="Event_1r7p379">
+        <dc:Bounds x="652" y="79" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0bgvxgc_di" bpmnElement="Activity_14yi8ka">
+        <dc:Bounds x="430" y="57" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
