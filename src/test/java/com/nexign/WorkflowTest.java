@@ -7,8 +7,7 @@ import org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.assertThat;
-import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.managementService;
+import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.*;
 
 @TestIncludedInStatisticCoverage
 public class WorkflowTest {
@@ -32,8 +31,14 @@ public class WorkflowTest {
     assertThat(processInstance).isWaitingAtExactly("Activity_0juc6su","Activity_1pzxjaq");
     //System.out.println("JOBS: " + managementService().createJobQuery().list());
     assertThat(processInstance).isWaitingFor("RabbitCallBack");
+   // assertThat(processInstance).
+    // System.out.println(processInstance.get);
+    System.out.println("JOBS: " + managementService().createJobQuery().active().list());
+     BpmnAwareTests.execute(BpmnAwareTests.job());
+     assertThat(processInstance).task().hasDefinitionKey("Activity_0zdbcyb");
+     complete(task(processInstance));
+     assertThat(processInstance).isEnded();
 
-    BpmnAwareTests.execute(BpmnAwareTests.job());
 //
 
     //BpmnAwareTests.assertThat(processInstance).;
