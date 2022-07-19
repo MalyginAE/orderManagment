@@ -12,6 +12,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>15</maven.compiler.source>
     <maven.compiler.target>15</maven.compiler.target>
+    <ordering.version>2.22.1</ordering.version>
   </properties>
 
   <dependencyManagement>
@@ -93,10 +94,10 @@
       <artifactId>camunda-bpm-spring-boot-starter-test</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-amqp</artifactId>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.springframework.boot</groupId>-->
+<!--      <artifactId>spring-boot-starter-amqp</artifactId>-->
+<!--    </dependency>-->
 
     <dependency>
       <groupId>com.h2database</groupId>
@@ -119,7 +120,35 @@
       <version>42.3.5</version>
     </dependency>
 
-<!--    <dependency>-->
+    <!-- Order Management Utils -->
+    <dependency>
+      <groupId>com.nexign.bss.ordering</groupId>
+      <artifactId>ordering-business-model</artifactId>
+      <version>${ordering.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.nexign.bss.ordering</groupId>
+      <artifactId>ordering-rest-api-model</artifactId>
+      <version>${ordering.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.nexign.bss.ordering</groupId>
+      <artifactId>ordering-context-utils</artifactId>
+      <version>${ordering.version}</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.24</version>
+      <scope>provided</scope>
+    </dependency>
+
+
+    <!--    <dependency>-->
 <!--      <groupId>org.junit.jupiter</groupId>-->
 <!--      <artifactId>junit-jupiter</artifactId>-->
 <!--      <version>5.5.1</version>-->
