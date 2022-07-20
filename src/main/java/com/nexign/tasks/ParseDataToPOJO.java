@@ -2,18 +2,22 @@ package com.nexign.tasks;
 
 import com.nexign.bss.ordering.rest.model.common.CommonOrder;
 import com.nexign.helpers.AbstractDelegate;
-import com.nexign.entieties.order.context.MultisubscriptionOrderParameters;
+import com.nexign.dto.order.context.MultisubscriptionOrderParameters;
 import com.nexign.utils.parsing.Order;
 import com.nexign.utils.parsing.ParseInputOrder;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.stereotype.Component;
 
 import static com.nexign.constants.process.variables.OrderContextConstants.*;
 
 @Component("parseInputOrderToPOJO")
+@Slf4j
 public class ParseDataToPOJO extends AbstractDelegate {
     @Override
     public void run(DelegateExecution execution) {
+        log.info("ParseDataToPOJO invoked ");
+        System.out.println(1);
         CommonOrder inputOrder = (CommonOrder) execution.getVariable(INPUT_ORDER);
         Order pojo = new ParseInputOrder();
         MultisubscriptionOrderParameters orderParameters = MultisubscriptionOrderParameters.builder()

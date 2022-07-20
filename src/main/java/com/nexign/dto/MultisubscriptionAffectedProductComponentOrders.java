@@ -1,4 +1,4 @@
-package com.nexign.entieties;
+package com.nexign.dto;
 
 public class MultisubscriptionAffectedProductComponentOrders {
 }

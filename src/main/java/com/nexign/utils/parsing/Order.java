@@ -1,6 +1,6 @@
 package com.nexign.utils.parsing;
 
-import com.nexign.entieties.order.context.*;
+import com.nexign.dto.order.context.*;
 
 import java.util.List;
 

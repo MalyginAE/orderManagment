@@ -1,4 +1,4 @@
-package com.nexign.entieties.order.context;
+package com.nexign.dto.order.context;
 
 import lombok.Builder;
 import lombok.Data;
