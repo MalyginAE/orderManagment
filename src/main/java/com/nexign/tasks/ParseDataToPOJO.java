@@ -30,6 +30,7 @@ public class ParseDataToPOJO extends AbstractDelegate {
                 .priceRelatedItems(pojo.getPriceRelatedItems())
                 .channels(pojo.getMultisubscriptionChannels())
                 .build();
+        execution.setVariable(IS_PROMOCODE_EXISTS,pojo.getPromoCodeData() != null);
         execution.setVariable(ORDER_PARAMETERS, orderParameters);
     }
 }

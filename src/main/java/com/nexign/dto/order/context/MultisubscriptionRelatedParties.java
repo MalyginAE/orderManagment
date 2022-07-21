@@ -6,7 +6,7 @@ import lombok.Data;
 public
 class MultisubscriptionRelatedParties {
     String msisdn;
-    String contactMsisdn;
+    Integer contactMsisdn;
     String cdiPartyId;
     String partyRoleId;
 }

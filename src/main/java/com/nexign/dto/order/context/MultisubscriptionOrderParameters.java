@@ -1,5 +1,6 @@
 package com.nexign.dto.order.context;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 @Data
+@AllArgsConstructor
 @Builder
 public class MultisubscriptionOrderParameters {
     String orderId;
@@ -18,25 +20,6 @@ public class MultisubscriptionOrderParameters {
     List<RelatedItem> priceRelatedItems;
     ProductPricePromoData productPriceData;
     Map<String, List<MultisubscriptionAdditionalMappingContext>> contextMap;
-}
-
-@Data
-class MultisubscriptionComponentOrderParameter {
-    String componentOrderId;
-    String orderItemId;
-    String action;
-    MultisubscriptionSpecification specification;
-    MultisubscriptionInstance instance;
-    String productOfferingId;
-    String productOfferingName;
-    String type;
-    List<ProductInventoryProductItemProductOrderItemRelationship> productOrderItemRelationship;
-}
-
-@Data
-class PromoCodeDataValue {
-    String relatedPromoActionId;
-    String value;
 }
 
 @Data
@@ -56,19 +39,6 @@ class MultisubscriptionSpecification {
     String name;
     List<MultisubscriptionCharacteristic> characteristics;
     String referredType;
-}
-
-@Data
-class MultisubscriptionInstance {
-    String instanceId;
-    String type;
-    String name;
-    List<MultisubscriptionCharacteristic> characteristics;
-    String state;
-    String externalState;
-    String startDate;
-    String terminationDate;
-    Object entity;
 }
 
 @Data

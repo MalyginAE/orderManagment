@@ -1,0 +1,19 @@
+package com.nexign.dto.order.context;
+
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+public
+class MultisubscriptionInstance {
+    String instanceId;
+    String type;
+    String name;
+    List<MultisubscriptionCharacteristic> characteristics;
+    String state;
+    String externalState;
+    String startDate;
+    String terminationDate;
+    Object entity;
+}
