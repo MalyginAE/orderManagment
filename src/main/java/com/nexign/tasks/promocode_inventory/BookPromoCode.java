@@ -17,6 +17,7 @@ public class BookPromoCode extends AbstractDelegate {
     @Override
     public void run(DelegateExecution delegateExecution) {
         MultisubscriptionOrderParameters parameters = (MultisubscriptionOrderParameters) delegateExecution.getVariable(OrderContextConstants.ORDER_PARAMETERS);
+
         promoCodeService.requestToBooking(parameters);
     }
 

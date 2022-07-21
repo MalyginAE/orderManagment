@@ -1,15 +1,27 @@
 package com.nexign.utils.parsing;
 
+import com.nexign.bss.ordering.rest.model.common.CommonOrder;
+import com.nexign.bss.ordering.rest.model.common.OrderItem;
 import com.nexign.dto.order.context.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ParseInputOrder implements Order{
+    private CommonOrder inputOrder;
+
+    public ParseInputOrder(CommonOrder inputOrder) {
+        this.inputOrder = inputOrder;
+    }
 
 
 
     @Override
-    public List prepareComponentOrderParameters() {
+    public List<MultisubscriptionComponentOrderParameter> prepareComponentOrderParameters() {
+        List<MultisubscriptionComponentOrderParameter> componentOrderParameters = new ArrayList<>();
+        List<OrderItem> orderItems = inputOrder.getOrderItems();
+
+
         return null;
     }
 

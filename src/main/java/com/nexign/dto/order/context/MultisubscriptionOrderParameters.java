@@ -23,15 +23,6 @@ public class MultisubscriptionOrderParameters {
 }
 
 @Data
-class MultisubscriptionAdditionalMappingContext {
-    String fabricRefId;
-    String type;
-    String fabricProductId;
-    String fabricProductOfferingId;
-    String swapFabricProductOfferingId;
-}
-
-@Data
 class MultisubscriptionSpecification {
     String specificationId;
     String code;
