@@ -5,4 +5,10 @@ public class RequestUrl {
     public static final String MULTIMAPPER_URL = "/api/catalog/ng-fpc-mmapperapp/v1/conversions";
     public static final String PRODUCT_INVENTORY_URL = "/api/product/product-inventory-cache/v1/";
     public static final String PAYMENT_SERVICE_URL = "/api/service/pay-srv-autopayapp/v1/products/";
+    public static final String PROMOCODE_INVENTORY_BOOKING = "/promoTicket/assign";
+    public static final String PROMOCODE_INVENTORY_ACTIVATE = "/promoTicket/updateSingle";
+
+    public static String getPromoCodeUrl(String action){
+        return "http://localhost:3333/api/partner/promocode-inventory-app/v2".concat(action);
+    }
 }
