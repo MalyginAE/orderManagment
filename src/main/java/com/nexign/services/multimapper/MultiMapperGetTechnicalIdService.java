@@ -1,6 +1,5 @@
 package com.nexign.services.multimapper;
 
-import com.nexign.bss.ordering.rest.model.product.PaymentRef;
 import com.nexign.constants.process.variables.OrderContextConstants;
 import com.nexign.dto.multimapper.dto.ConvertedItem;
 import com.nexign.dto.multimapper.dto.MultimapperConversionRequestBody;
