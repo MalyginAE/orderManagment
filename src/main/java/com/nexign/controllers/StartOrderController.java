@@ -42,7 +42,7 @@ public class StartOrderController {
     }
 
 
-    @PostMapping
+    @PostMapping("/hello")
     public ResponseEntity<Object> openApi(@RequestBody CommonOrder order){
         runtimeService.createMessageCorrelation("Message_2r730i1")
                 .setVariable(INPUT_ORDER, order)

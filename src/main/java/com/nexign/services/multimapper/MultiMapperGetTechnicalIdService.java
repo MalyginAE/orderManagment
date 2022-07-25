@@ -1,13 +1,13 @@
 package com.nexign.services.multimapper;
 
+import com.nexign.bss.ordering.rest.model.product.PaymentRef;
 import com.nexign.constants.process.variables.OrderContextConstants;
-import com.nexign.dto.multimapper.dto.*;
+import com.nexign.dto.multimapper.dto.ConvertedItem;
+import com.nexign.dto.multimapper.dto.MultimapperConversionRequestBody;
+import com.nexign.dto.multimapper.dto.MultimapperResponseBodyDto;
+import com.nexign.dto.multimapper.dto.OutputItem;
 import com.nexign.dto.order.context.MultisubscriptionAdditionalMappingContext;
-import com.nexign.dto.order.context.MultisubscriptionComponentOrderParameter;
-import com.nexign.dto.order.context.MultisubscriptionOrderCharacteristic;
 import com.nexign.dto.order.context.MultisubscriptionOrderParameters;
-import com.nexign.dto.promocode_inventory.dto.PromoCodeBookingResponseDto;
-import com.nexign.dto.promocode_inventory.dto.PromoCodeInventoryBookingRequestBodyDto;
 import com.nexign.services.AbstractCommonServiceHelper;
 import com.nexign.utils.parsing.multimapper.PrepareRequestBodyUtil;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -21,13 +21,12 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
 import static com.nexign.constants.process.variables.OrderContextConstants.*;
-import static com.nexign.constants.urls.RequestUrl.*;
+import static com.nexign.constants.urls.RequestUrl.getMultimapperUrl;
 
 @Service
 public class MultiMapperGetTechnicalIdService extends AbstractCommonServiceHelper {

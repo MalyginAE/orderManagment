@@ -1,10 +1,10 @@
 package com.nexign.dto.order.context;
 
 import lombok.Data;
+import lombok.Value;
 
-@Data
-public
-class MultisubscriptionRelatedParties {
+@Value
+public class MultisubscriptionRelatedParties {
     String msisdn;
     Integer contactMsisdn;
     String cdiPartyId;

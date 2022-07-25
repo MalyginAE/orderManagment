@@ -1,11 +1,9 @@
 package com.nexign.dto.order.context;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
-public
-class
-MultisubscriptionChannel {
+@Value
+public class MultisubscriptionChannel {
     String channelId;
     String name;
     String role;

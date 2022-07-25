@@ -43,27 +43,17 @@ public class BookingPromoCodeService extends AbstractCommonServiceHelper {
                 uri(getPromoCodeUrl(PROMOCODE_INVENTORY_BOOKING)).
                 accept(MediaType.APPLICATION_JSON).
                 bodyValue(model).
-               // retrieve()
                 exchangeToMono(response -> {
                     System.out.println(response.statusCode());
                     if (response.statusCode().equals(HttpStatus.OK)) {
                         return response.bodyToMono(PromoCodeBookingResponseDto.class);
                     }
-//                    else if (response.statusCode().equals(HttpStatus.CREATED)){
-//                        return new Mono<PromoCodeBookingRespoonceDto>();
-//                    }
-                   // else if (response.statusCode().is4xxClientError()) {
-                        //return response.bodyToMono(ErrorContainer.class);
-                  //  }
                     else {
                         return Mono.error((Supplier<? extends Throwable>) response.createException());
                     }
                 })
                 .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(5)));
-                //.onStatus(x->x.value() == 203, Mono.error(new ServiceRetryExeption("asda",203))
 
-               // .onStatus(HttpStatus::is5xxServerError, ClientResponse::createException)
-                //.bodyToMono(PromoCodeBookingRespoonceDto.class).
 
 
 

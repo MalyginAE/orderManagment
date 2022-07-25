@@ -1,12 +1,12 @@
 package com.nexign.dto.order.context;
 
 import lombok.Data;
+import lombok.Value;
 
 import java.util.List;
 
-@Data
-public
-class MultisubscriptionInstance {
+@Value
+public class MultisubscriptionInstance {
     String instanceId;
     String type;
     String name;

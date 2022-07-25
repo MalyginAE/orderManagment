@@ -1,10 +1,9 @@
 package com.nexign.dto.order.context;
 
 import lombok.Data;
+import lombok.Value;
 
-@Data
-public
-class ProductInventoryProductItemProductOrderItemRelationship {
+@Value public class ProductInventoryProductItemProductOrderItemRelationship {
     String productOrderItemId;
     String relationshipType;
 }

@@ -1,10 +1,10 @@
 package com.nexign.dto.order.context;
 
 import lombok.Data;
+import lombok.Value;
 
-@Data
-public
-class PromoCodeDataValue {
+@Value
+public class PromoCodeDataValue {
     String relatedPromoActionId;
     String value;
 }

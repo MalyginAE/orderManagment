@@ -1,10 +1,12 @@
 package com.nexign.dto.order.context;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 public
 class MultisubscriptionComponentOrderParameter {
     String componentOrderId;

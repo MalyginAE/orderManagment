@@ -2,8 +2,9 @@ package com.nexign.dto.multimapper.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 @AllArgsConstructor
 public class OutputItem {
     String itemType;

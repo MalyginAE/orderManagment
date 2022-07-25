@@ -1,10 +1,10 @@
 package com.nexign.dto.order.context;
 
 import lombok.Data;
+import lombok.Value;
 
-@Data
-public
-class MultisubscriptionOrderCharacteristic {
+@Value
+public class MultisubscriptionOrderCharacteristic {
     String space;
     String name;
     Object value;

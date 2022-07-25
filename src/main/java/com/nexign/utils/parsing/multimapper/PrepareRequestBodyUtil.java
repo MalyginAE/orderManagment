@@ -29,7 +29,7 @@ public class PrepareRequestBodyUtil {
                     "PRODUCT_ENTITY",
                     new ArrayList<Characteristic>(),
                     parameters.getPriceRelatedItems(),
-                    p.getInstance().getExternalState() == null ? Collections.emptyList() : getAdditionalInfo(p.getInstance().getExternalState())
+                    Collections.emptyList()     //p.getInstance().getExternalState() == null ? Collections.emptyList() : getAdditionalInfo(p.getInstance().getExternalState())
                     ));
         }
         return itemList;
