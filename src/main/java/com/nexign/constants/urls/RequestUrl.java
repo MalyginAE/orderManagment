@@ -24,6 +24,10 @@ public class RequestUrl {
         return "http://localhost:3333".concat(PRODUCT_INVENTORY_URL).concat(event);
     }
 
+    public static String getPartnerServiceUrl(){
+        return PARTNER_SERVICES_URL;
+    }
+
     public String getUrl(String url, MultiValueMap<String, String> params) {
         return UriComponentsBuilder.fromUriString(url).queryParams(params).build().toUriString();
     }

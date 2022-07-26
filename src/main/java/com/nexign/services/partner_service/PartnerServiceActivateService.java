@@ -1,30 +1,54 @@
 package com.nexign.services.partner_service;
 
 import com.nexign.dto.common.FabricActionMap;
+import com.nexign.dto.ng_psi.ProductInventoryActivationStartedPrepareRequestBodyDto;
+import com.nexign.dto.ng_psi.ProductInventoryActivationStartedResponseBodyDto;
 import com.nexign.dto.order.context.MultisubscriptionOrderParameters;
 import com.nexign.dto.order.context.MultisubscriptionRelatedParties;
-import com.nexign.dto.partner_service.ClientInfo;
-import com.nexign.dto.partner_service.ExtraParams;
-import com.nexign.dto.partner_service.Parameters;
-import com.nexign.dto.partner_service.PartnerServiceActivateRequestBodyDto;
+import com.nexign.dto.partner_service.*;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static com.nexign.constants.process.variables.OrderContextConstants.*;
+import static com.nexign.constants.urls.RequestUrl.getPartnerServiceUrl;
+import static com.nexign.constants.urls.RequestUrl.getProductInventoryUrl;
 
 @Service
 @RequiredArgsConstructor
 public class PartnerServiceActivateService {
     private final WebClient webClient;
 
-    public void createActivationStartedRequest(DelegateExecution execution) {
+    public void activatePsFabrics(DelegateExecution execution) {
         List<PartnerServiceActivateRequestBodyDto> activateRequestBodyDto = prepareRequestBody(execution);
 
+    }
+
+
+    private Mono<PartnerServiceActivateResponseBodyDto> prepareRequestToActivate(ProductInventoryActivationStartedPrepareRequestBodyDto model) {
+        return webClient.post().
+                uri(getPartnerServiceUrl()).
+                accept(MediaType.APPLICATION_JSON).
+                bodyValue(model).
+                exchangeToMono(response -> {
+                    System.out.println(response.statusCode());
+                    if (response.statusCode().equals(HttpStatus.OK)) {
+                        return response.bodyToMono(PartnerServiceActivateResponseBodyDto.class);
+                    } else {
+                        return Mono.error((Supplier<? extends Throwable>) response.createException());
+                    }
+                })
+                .retryWhen(Retry.fixedDelay(4, Duration.ofSeconds(5)));
     }
 
     private List<PartnerServiceActivateRequestBodyDto> prepareRequestBody(DelegateExecution execution) {
