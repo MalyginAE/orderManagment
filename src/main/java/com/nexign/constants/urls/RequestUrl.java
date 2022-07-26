@@ -15,4 +15,8 @@ public class RequestUrl {
     public static String getMultimapperUrl(){
         return "http://localhost:3333".concat(MULTIMAPPER_QUERY_PATH);
     }
+
+    public static String getProductInventoryUrl(String event){
+        return "http://localhost:3333".concat(PRODUCT_INVENTORY_URL).concat(event);
+    }
 }

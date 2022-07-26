@@ -9,8 +9,8 @@ import com.nexign.dto.order.context.MultisubscriptionAdditionalMappingContext;
 import com.nexign.dto.order.context.MultisubscriptionOrderParameters;
 import com.nexign.services.AbstractCommonServiceHelper;
 import com.nexign.utils.parsing.multimapper.PrepareRequestBodyUtil;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -28,9 +28,10 @@ import static com.nexign.constants.process.variables.OrderContextConstants.*;
 import static com.nexign.constants.urls.RequestUrl.getMultimapperUrl;
 
 @Service
+@RequiredArgsConstructor
 public class MultiMapperGetTechnicalIdService extends AbstractCommonServiceHelper {
-    @Autowired
-    WebClient webClient;
+
+    private final WebClient webClient;
 
     public MultimapperResponseBodyDto getResponseWithTechnicalIdFromMultiMapper(DelegateExecution delegateExecution) {
         MultimapperConversionRequestBody multimapperConversionRequestBody = PrepareRequestBodyUtil.prepareRequestBody((MultisubscriptionOrderParameters) delegateExecution.getVariable(OrderContextConstants.ORDER_PARAMETERS));
