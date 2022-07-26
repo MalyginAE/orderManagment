@@ -4,6 +4,7 @@ package com.nexign.controllers;
 
 import com.nexign.bss.ordering.rest.model.common.CommonOrder;
 import com.nexign.constants.process.variables.OrderContextConstants;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.RuntimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +19,10 @@ import javax.ws.rs.QueryParam;
 import static com.nexign.constants.process.variables.OrderContextConstants.INPUT_ORDER;
 
 @RestController
+@RequiredArgsConstructor
 public class StartOrderController {
-    @Autowired
-    WebClient webClient;
-    @Autowired
-    private RuntimeService runtimeService;
+    private final WebClient webClient;
+    private final RuntimeService runtimeService;
 //    @Autowired
 //    private AmqpSender sender;
 //    @GetMapping("put")

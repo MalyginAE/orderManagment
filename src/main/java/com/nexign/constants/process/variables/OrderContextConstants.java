@@ -4,6 +4,7 @@ public class OrderContextConstants {
     public static final String INPUT_ORDER = "InputOrder";
     public static final String ORDER_PARAMETERS = "OrderParameters";
     public static final String IS_PROMOCODE_EXISTS = "promoCodeDataExists";
+    public static final String CALLBACK_OBJECT = "callbackProperty";
 
     //TechnicalId
     public static final String BSS_TECHNICAL_ID = "bssTechnicalId";
