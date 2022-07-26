@@ -1,6 +1,7 @@
 package com.nexign.services.ng_psi;
 
 import com.nexign.dto.ng_psi.*;
+import com.nexign.dto.order.context.MultisubscriptionComponentOrderParameter;
 import com.nexign.dto.order.context.MultisubscriptionOrderParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -77,5 +78,20 @@ public class ProductInventoryCreateProductService {
                     }
                 })
                 .retryWhen(Retry.fixedDelay(4, Duration.ofSeconds(5)));
+    }
+
+    public void saveInstanceIdInComponentOrders(MultisubscriptionOrderParameters parameters,ProductInventoryActivationStartedResponseBodyDto responseBodyDto) {
+        responseBodyDto.getProducts().forEach( product -> {
+            parameters.getAffectedComponentOrders().forEach( x -> {
+                if (x.getProductOfferingId().equals(product.getProductOfferingId()))
+                    x.getInstance().setInstanceId( product.getProductId());
+            });
+//            for (int i = 0; i < parameters.getAffectedComponentOrders().size(); i++) {
+//                MultisubscriptionComponentOrderParameter parameter = parameters.getAffectedComponentOrders().get(i);
+//                if (parameter.getProductOfferingId().equals(product.getProductOfferingId()))
+//                    parameter.getInstance().getInstanceId() = product.getProductId();
+//            }
+
+        });
     }
 }

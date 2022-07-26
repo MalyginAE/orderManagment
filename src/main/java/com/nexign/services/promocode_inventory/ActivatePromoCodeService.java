@@ -24,7 +24,6 @@ import static com.nexign.constants.urls.RequestUrl.getPromoCodeUrl;
 public record ActivatePromoCodeService(WebClient webClient) {
     public PromoCodeActivateResponseDto requestToActivate(MultisubscriptionOrderParameters parameters) {
         return prepareRequest(prepareRequestBody(parameters)).block();
-
     }
 
 

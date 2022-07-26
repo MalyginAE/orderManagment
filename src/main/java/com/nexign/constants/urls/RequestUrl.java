@@ -1,5 +1,9 @@
 package com.nexign.constants.urls;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
+
 public class RequestUrl {
     public static final String PARTNER_SERVICES_URL = "/api/partner/uni-pmp/v1/call";
     public static final String MULTIMAPPER_QUERY_PATH = "/api/catalog/ng-fpc-mmapperapp/v1/conversions";
@@ -18,5 +22,16 @@ public class RequestUrl {
 
     public static String getProductInventoryUrl(String event){
         return "http://localhost:3333".concat(PRODUCT_INVENTORY_URL).concat(event);
+    }
+
+    public String getUrl(String url, MultiValueMap<String, String> params) {
+        return UriComponentsBuilder.fromUriString(url).queryParams(params).build().toUriString();
+    }
+
+    public static MultiValueMap getBaseHeadersMap (){
+        MultiValueMap<String,String> baseHeaders = new HttpHeaders();
+        baseHeaders.add("APPL_CODE","CRAB");
+        baseHeaders.add("LOGIN","CRAB");
+        return baseHeaders;
     }
 }

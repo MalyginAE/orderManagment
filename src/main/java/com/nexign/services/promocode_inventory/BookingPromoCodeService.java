@@ -22,7 +22,7 @@ import static com.nexign.constants.urls.RequestUrl.PROMOCODE_INVENTORY_BOOKING;
 import static com.nexign.constants.urls.RequestUrl.getPromoCodeUrl;
 @RequiredArgsConstructor
 @Service
-public class BookingPromoCodeService extends AbstractCommonServiceHelper {
+public class BookingPromoCodeService  {
 
 
     private final WebClient webClient;

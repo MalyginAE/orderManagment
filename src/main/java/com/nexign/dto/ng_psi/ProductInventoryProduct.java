@@ -1,7 +1,9 @@
 package com.nexign.dto.ng_psi;
 
-import java.util.List;
+import lombok.Value;
 
+import java.util.List;
+@Value
 public class ProductInventoryProduct {
     String productOfferingId;
     String productOfferingName;

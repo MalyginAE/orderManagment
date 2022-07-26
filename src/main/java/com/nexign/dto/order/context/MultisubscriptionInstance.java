@@ -5,7 +5,7 @@ import lombok.Value;
 
 import java.util.List;
 
-@Value
+@Data
 public class MultisubscriptionInstance {
     String instanceId;
     String type;
