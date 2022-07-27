@@ -20,7 +20,6 @@ import static com.nexign.constants.urls.RequestUrl.PROMOCODE_INVENTORY_ACTIVATE;
 import static com.nexign.constants.urls.RequestUrl.getPromoCodeUrl;
 
 @Service
-@RequiredArgsConstructor
 public record ActivatePromoCodeService(WebClient webClient) {
     public PromoCodeActivateResponseDto requestToActivate(MultisubscriptionOrderParameters parameters) {
         return prepareRequest(prepareRequestBody(parameters)).block();
