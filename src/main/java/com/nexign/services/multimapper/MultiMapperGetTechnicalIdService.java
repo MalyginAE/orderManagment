@@ -7,7 +7,6 @@ import com.nexign.dto.multimapper.dto.MultimapperResponseBodyDto;
 import com.nexign.dto.multimapper.dto.OutputItem;
 import com.nexign.dto.order.context.MultisubscriptionAdditionalMappingContext;
 import com.nexign.dto.order.context.MultisubscriptionOrderParameters;
-import com.nexign.services.AbstractCommonServiceHelper;
 import com.nexign.utils.parsing.multimapper.PrepareRequestBodyUtil;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -29,7 +28,7 @@ import static com.nexign.constants.urls.RequestUrl.getMultimapperUrl;
 
 @Service
 @RequiredArgsConstructor
-public class MultiMapperGetTechnicalIdService extends AbstractCommonServiceHelper {
+public class MultiMapperGetTechnicalIdService {
 
     private final WebClient webClient;
 

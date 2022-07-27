@@ -1,5 +1,6 @@
 package com.nexign.constants.urls;
 
+import com.nexign.dto.order.context.MultisubscriptionOrderParameters;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -37,5 +38,8 @@ public class RequestUrl {
         baseHeaders.add("APPL_CODE","CRAB");
         baseHeaders.add("LOGIN","CRAB");
         return baseHeaders;
+    }
+    public static String getBssUrl(MultisubscriptionOrderParameters parameters) {
+        return String.format("%s/openapi/v2/subscribers/msisdn:%s/productOfferings/activate/bulk", "http://localhost:3333",parameters.getRelatedParties().getMsisdn());
     }
 }
