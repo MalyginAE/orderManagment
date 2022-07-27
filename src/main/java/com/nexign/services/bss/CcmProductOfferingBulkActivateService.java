@@ -1,10 +1,6 @@
 package com.nexign.services.bss;
 
-import com.nexign.constants.process.variables.OrderContextConstants;
-import com.nexign.dto.bss.ActionParameter;
-import com.nexign.dto.bss.CcmProductOfferingBulcActivateResponceBodyDto;
-import com.nexign.dto.bss.ProductOfferingBulkActivateRequestBodyDto;
-import com.nexign.dto.bss.ProductOfferingsBulkActivateParameter;
+import com.nexign.dto.bss.*;
 import com.nexign.dto.common.FabricActionMap;
 import com.nexign.dto.order.context.MultisubscriptionOrderParameters;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.nexign.constants.process.variables.OrderContextConstants.*;
 import static com.nexign.constants.urls.RequestUrl.getBssUrl;
 
 
@@ -30,29 +27,29 @@ public class CcmProductOfferingBulkActivateService {
     private final WebClient webClient;
 
 
-    public CcmProductOfferingBulcActivateResponceBodyDto createRequest(DelegateExecution execution){
-        List<String> technicalId = (List<String>) execution.getVariable(OrderContextConstants.BSS_TECHNICAL_ID);
+    public CcmProductOfferingBulcActivateResponceBodyDto createRequest(DelegateExecution execution) {
+        List<String> technicalId = (List<String>) execution.getVariable(BSS_TECHNICAL_ID);
+        includeActionMapInContext(execution);
         ProductOfferingBulkActivateRequestBodyDto bodyDto = prepareRequestBody(technicalId);
-        return prepareRequestToActivate(bodyDto,execution).block();
+        return prepareRequestToActivate(bodyDto, execution).block();
 // TODO: 27.07.2022
 //LOGIN=${oapiLogin}&APPL_CODE=${applCode}&correlationId=${correlationId}&replyTo=${replyTo}
 
 
-
     }
 
-    private void includeActionMapInContext(DelegateExecution execution){
-        List<FabricActionMap> actionMap = (List<FabricActionMap>) execution.getVariable(OrderContextConstants.BSS_ACTION_MAP);
+    private void includeActionMapInContext(DelegateExecution execution) {
+        List<FabricActionMap> actionMap = (List<FabricActionMap>) execution.getVariable(BSS_ACTION_MAP);
         actionMap = (actionMap == null) ? new ArrayList<>() : actionMap;
-        List<String> technicalId = (List<String>) execution.getVariable(OrderContextConstants.BSS_TECHNICAL_ID);
-        String correlationId = String.format("%s_%s_%s",execution.getProcessInstanceId(),"startEvent","activate");
-        for (String s: technicalId) {
+        List<String> technicalId = (List<String>) execution.getVariable(BSS_TECHNICAL_ID);
+        String correlationId = String.format("%s_%s_%s", execution.getProcessInstanceId(), "startEvent", "activate");
+        for (String s : technicalId) {
             actionMap.add(new FabricActionMap(s, correlationId, "PENDING_ACTIVATE"));
         }
     }
 
-    private Mono<CcmProductOfferingBulcActivateResponceBodyDto> prepareRequestToActivate(ProductOfferingBulkActivateRequestBodyDto model,DelegateExecution execution) {
-        MultisubscriptionOrderParameters parameters = (MultisubscriptionOrderParameters) execution.getVariable(OrderContextConstants.ORDER_PARAMETERS);
+    private Mono<CcmProductOfferingBulcActivateResponceBodyDto> prepareRequestToActivate(ProductOfferingBulkActivateRequestBodyDto model, DelegateExecution execution) {
+        MultisubscriptionOrderParameters parameters = (MultisubscriptionOrderParameters) execution.getVariable(ORDER_PARAMETERS);
         return webClient.post().
                 uri(getBssUrl(parameters)).
                 accept(MediaType.APPLICATION_JSON).
@@ -60,7 +57,7 @@ public class CcmProductOfferingBulkActivateService {
                 exchangeToMono(response -> {
                     System.out.println(response.statusCode());
                     if (response.statusCode().equals(HttpStatus.OK) || response.statusCode().equals(HttpStatus.ACCEPTED)) {
-                        execution.setVariableLocal("httpAnswerCode",response.statusCode());
+                        execution.setVariableLocal("httpAnswerCode", response.statusCode());
                         return response.bodyToMono(CcmProductOfferingBulcActivateResponceBodyDto.class);
                     } else {
                         return Mono.error((Supplier<? extends Throwable>) response.createException());
@@ -70,11 +67,7 @@ public class CcmProductOfferingBulkActivateService {
     }
 
 
-
-
-
-
-    private ProductOfferingBulkActivateRequestBodyDto prepareRequestBody(List<String> bssTechnicalIds){
+    private ProductOfferingBulkActivateRequestBodyDto prepareRequestBody(List<String> bssTechnicalIds) {
         List<ProductOfferingsBulkActivateParameter> parameters = new ArrayList<>();
         bssTechnicalIds.forEach(bssTechnicalId ->
                 parameters.add(new ProductOfferingsBulkActivateParameter(
@@ -84,6 +77,52 @@ public class CcmProductOfferingBulkActivateService {
         );
         return new ProductOfferingBulkActivateRequestBodyDto(parameters);
     }
+
+    public Boolean isNeedToCheckOrder(DelegateExecution execution, CcmProductOfferingBulcActivateResponceBodyDto responceBodyDto) {
+       return (responceBodyDto.getOrderId() == null &&
+               (Integer) execution.getVariableLocal("httpAnswerCode") == 200);
+    }
+
+    public void checkOrder(DelegateExecution delegateExecution) {
+
+    }
+
+    private Mono<CcmProductOfferingBulcActivateResponceBodyDto> prepareRequestToCheckOrder(CcmProductOfferingCheackOrderRequestBodyDto model, DelegateExecution execution) {
+        MultisubscriptionOrderParameters parameters = (MultisubscriptionOrderParameters) execution.getVariable(ORDER_PARAMETERS);
+        return webClient.post().
+                uri(getBssUrl(parameters)).
+                accept(MediaType.APPLICATION_JSON).
+                bodyValue(model).
+                exchangeToMono(response -> {
+                    System.out.println(response.statusCode());
+                    if (response.statusCode().equals(HttpStatus.OK) || response.statusCode().equals(HttpStatus.ACCEPTED)) {
+                        return response.bodyToMono(CcmProductOfferingBulcActivateResponceBodyDto.class);
+                    } else {
+                        return Mono.error((Supplier<? extends Throwable>) response.createException());
+                    }
+                })
+                .retryWhen(Retry.fixedDelay(4, Duration.ofSeconds(5)));
+    }
+
+    private CcmProductOfferingCheackOrderRequestBodyDto prepareRequestBody(){
+        return new CcmProductOfferingCheackOrderRequestBodyDto();
+    }
+
+    //если при сопоставлении ошибка выбрость свое кастомное исключение
+
+    // TODO: 27.07.2022
+
+    public void analyzeAnswer(DelegateExecution execution, CcmProductOfferingCheackOrderResponceBodyDto bodyDto){
+        List<String> technicalId = (List<String>) execution.getVariable(BSS_TECHNICAL_ID);
+        if (technicalId.size() == bodyDto.getListInfo().getCount()){
+
+        }
+        else {
+            throw new
+            execution.setVariable(",","");// бросить исключение
+        }
+    }
+
 
 /**
  *   void process(Exchange exchange) throws Exception {
