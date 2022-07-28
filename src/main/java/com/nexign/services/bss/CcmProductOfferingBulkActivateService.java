@@ -18,7 +18,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static com.nexign.constants.process.variables.OrderContextConstants.*;
-import static com.nexign.constants.urls.RequestUrl.getBssUrl;
+import static com.nexign.constants.urls.RequestUrl.getBssActivateUrl;
+import static com.nexign.constants.urls.RequestUrl.getBssCheckProductUrl;
 
 
 @Service
@@ -30,7 +31,7 @@ public class CcmProductOfferingBulkActivateService {
     public CcmProductOfferingBulcActivateResponceBodyDto createRequest(DelegateExecution execution) {
         List<String> technicalId = (List<String>) execution.getVariable(BSS_TECHNICAL_ID);
         includeActionMapInContext(execution);
-        ProductOfferingBulkActivateRequestBodyDto bodyDto = prepareRequestBody(technicalId);
+        ProductOfferingBulkActivateRequestBodyDto bodyDto = prepareRequestBodyToActivate(technicalId);
         return prepareRequestToActivate(bodyDto, execution).block();
 // TODO: 27.07.2022
 //LOGIN=${oapiLogin}&APPL_CODE=${applCode}&correlationId=${correlationId}&replyTo=${replyTo}
@@ -51,7 +52,7 @@ public class CcmProductOfferingBulkActivateService {
     private Mono<CcmProductOfferingBulcActivateResponceBodyDto> prepareRequestToActivate(ProductOfferingBulkActivateRequestBodyDto model, DelegateExecution execution) {
         MultisubscriptionOrderParameters parameters = (MultisubscriptionOrderParameters) execution.getVariable(ORDER_PARAMETERS);
         return webClient.post().
-                uri(getBssUrl(parameters)).
+                uri(getBssActivateUrl(parameters)).
                 accept(MediaType.APPLICATION_JSON).
                 bodyValue(model).
                 exchangeToMono(response -> {
@@ -67,7 +68,7 @@ public class CcmProductOfferingBulkActivateService {
     }
 
 
-    private ProductOfferingBulkActivateRequestBodyDto prepareRequestBody(List<String> bssTechnicalIds) {
+    private ProductOfferingBulkActivateRequestBodyDto prepareRequestBodyToActivate(List<String> bssTechnicalIds) {
         List<ProductOfferingsBulkActivateParameter> parameters = new ArrayList<>();
         bssTechnicalIds.forEach(bssTechnicalId ->
                 parameters.add(new ProductOfferingsBulkActivateParameter(
@@ -83,14 +84,16 @@ public class CcmProductOfferingBulkActivateService {
                (Integer) execution.getVariableLocal("httpAnswerCode") == 200);
     }
 
-    public void checkOrder(DelegateExecution delegateExecution) {
-
+    public void checkOrder(DelegateExecution execution) {
+        List<String> technicalId = (List<String>) execution.getVariable(BSS_TECHNICAL_ID);
+        CcmProductOfferingCheackOrderRequestBodyDto bodyDto = prepareRequestBodyToCheckOrder(technicalId);
+        prepareRequestToCheckOrder(bodyDto,execution);
     }
 
     private Mono<CcmProductOfferingBulcActivateResponceBodyDto> prepareRequestToCheckOrder(CcmProductOfferingCheackOrderRequestBodyDto model, DelegateExecution execution) {
         MultisubscriptionOrderParameters parameters = (MultisubscriptionOrderParameters) execution.getVariable(ORDER_PARAMETERS);
         return webClient.post().
-                uri(getBssUrl(parameters)).
+                uri(getBssCheckProductUrl(parameters)).
                 accept(MediaType.APPLICATION_JSON).
                 bodyValue(model).
                 exchangeToMono(response -> {
@@ -104,8 +107,8 @@ public class CcmProductOfferingBulkActivateService {
                 .retryWhen(Retry.fixedDelay(4, Duration.ofSeconds(5)));
     }
 
-    private CcmProductOfferingCheackOrderRequestBodyDto prepareRequestBody(){
-        return new CcmProductOfferingCheackOrderRequestBodyDto();
+    private CcmProductOfferingCheackOrderRequestBodyDto prepareRequestBodyToCheckOrder(List<String> techIds){
+        return new CcmProductOfferingCheackOrderRequestBodyDto(techIds,List.of(1,2));
     }
 
     //если при сопоставлении ошибка выбрость свое кастомное исключение
@@ -115,138 +118,10 @@ public class CcmProductOfferingBulkActivateService {
     public void analyzeAnswer(DelegateExecution execution, CcmProductOfferingCheackOrderResponceBodyDto bodyDto){
         List<String> technicalId = (List<String>) execution.getVariable(BSS_TECHNICAL_ID);
         if (technicalId.size() == bodyDto.getListInfo().getCount()){
-
+            //todo добавить id в контекстную мапу
         }
         else {
-            throw new
-            execution.setVariable(",","");// бросить исключение
+            throw new RuntimeException();//todo подумать и дописать
         }
     }
-
-
-/**
- *   void process(Exchange exchange) throws Exception {
- *         String waitBSSTimeout = zooService.getString(ZooKeeperParameters.BSS_WAIT_TIMEOUT)
- *         Integer httpAnswerCode = exchange.in.getHeader(Exchange.HTTP_RESPONSE_CODE, Integer)
- *         exchange.setProperty("httpAnswerCode", httpAnswerCode)
- *         if (httpAnswerCode == 200 || httpAnswerCode == 202) {
- *             def answerBody = mapper.readValue(exchange.in.getBody(String), CcmProductOfferingBulkActivateAnswer)
- *             if (answerBody.orderId != null) {
- *                 exchange.setProperty("ps.crab.wf.context.CheckBssOrderId", true)
- *                 logger.debug("Creating bssOrderId = ${answerBody.orderId}")
- *
- *                 String correlationId = exchange.getProperty(CommonScenarioHelper.CONTEXT_CORRELATION_ID, String)
- *                 exchange.in.setHeader(CommonScenarioHelper.HEADER_WAIT_TIMEOUT, waitBSSTimeout)
- *                 exchange.in.setHeader(CommonScenarioHelper.HEADER_WAIT_CORRELATION_ID, correlationId)
- *
- *                 CommonScenarioHelper.prepareStatement(exchange, "DONE", mapper.valueToTree(answerBody))
- *             } else {
- *                 String correlationId = exchange.getProperty(CommonScenarioHelper.CONTEXT_CORRELATION_ID, String)
- *                 Boolean bssCheckCase = correlationId.contains("_ccm_product_deactivate")
- *                 exchange.setProperty("ps.crab.wf.context.CheckBssOrderId", bssCheckCase)
- *                 CommonScenarioHelper.prepareStatement(exchange, "DONE", "BssOrder is null")
- *             }
- *         } else {
- *             String status = (httpAnswerCode == 500) ? "FAIL" : "ERROR"
- *             logger.debug("${status}:{}", mapper.valueToTree(exchange.in.getBody(String)))
- *
- *             CommonScenarioHelper.prepareErrorModel(exchange, "BSS")
- *
- *             exchange.setProperty("ps.crab.wf.context.rollbackVasp", true)
- *
- *             CommonScenarioHelper.prepareStatement(exchange, status, exchange.in.getBody(String))
- *         }
- *
- *
- *
- *
- *         ////
- *
- *         package com.nexign.bss.tailored_crab_mf_ml.scenarios.ccm
- *
- *
- * import static org.apache.http.entity.ContentType.APPLICATION_JSON
- *
- * class CcmAnalyzeResposeCodeRouteBuilder extends RouteBuilder {
- *     private static final ZooService zooService = CommonScenarioHelper.initializeZooService()
- *     private static Logger logger = LoggerFactory.getLogger(CcmAnalyzeResposeCodeRouteBuilder.class)
- *     private static ObjectMapper mapper = CommonScenarioHelper.initializeObjectMapper()
- *     @Override
- *     void configure() throws Exception {
- *         from("direct:wfCcmAnalyzeResponseCode")
- *                 .choice()
- *                 .when({ Exchange ex ->
- *                     return ex.getProperty("httpAnswerCode") == 202
- *                 })
- *                 .to("crab:wait")
- *                 .endChoice()
- *                 .when({ Exchange ex ->
- *                     return ex.getProperty("httpAnswerCode") == 200 && ex.getProperty("ps.crab.wf.context.CheckBssOrderId", Boolean)
- *                 })
- *                 .to("crab:success")
- *                 .endChoice()
- *                 .when({ Exchange ex ->
- *                     return ex.getProperty("httpAnswerCode") == 200 && !ex.getProperty("ps.crab.wf.context.CheckBssOrderId",Boolean)
- *                 })
- *                 .to("direct:wfBssCheckProductOfferingId")
- *                 .endChoice()
- *                 .otherwise()
- *                 .to("crab:error")
- *                 .endChoice()
- *                 .end()
- *
- *         from("direct:wfBssCheckProductOfferingId")
- *                 .process({ Exchange ex ->
- *                     logger.debug("check invoked")
- *                     String oapiUrl = zooService.getString(ZooKeeperParameters.OAPI_URL)
- *                     String oapiLogin = zooService.getString(ZooKeeperParameters.OAPI_LOGIN)
- *                     String applCode = zooService.getString(ZooKeeperParameters.OAPI_APPL_CODE)
- *
- *                     MultisubscriptionOrderParameters parameters = ex.getProperty("ps.crab.wf.context.inputOrderParameters", MultisubscriptionOrderParameters)
- *                     List<String> bssTechnicalId = ex.getProperty("ps.crab.wf.context.bssTechnicalId", ArrayList.class)
- *                     def msisdn = parameters.relatedParties.contactMsisdn
- *                     String url = "http://$oapiUrl/openapi/v2/subscribers/msisdn:${msisdn}/products/search"
- *                     String query = "LOGIN=${oapiLogin}&APPL_CODE=${applCode}"
- *
- *                     def requestBody = JsonOutput.toJson([productOfferingIds:bssTechnicalId,productStatusIds:[1,2]])
- *                     logger.debug("${HttpMethods.POST} ${Exchange.HTTP_URI}=${url}, ${Exchange.HTTP_QUERY}=${query}, body:${mapper.valueToTree(requestBody)}")
- *
- *                     ex.in.setHeader(Exchange.ACCEPT_CONTENT_TYPE, APPLICATION_JSON)
- *                     ex.in.setHeader(Exchange.CONTENT_TYPE, APPLICATION_JSON)
- *                     ex.in.setHeader(Exchange.HTTP_URI, url)
- *                     ex.in.setHeader(Exchange.HTTP_QUERY, query)
- *                     ex.in.setHeader(Exchange.HTTP_METHOD, HttpMethods.POST)
- *                     ex.in.setBody(requestBody)
- *                 })
- *                 .to("http4://singleEntryPoint")
- *                 .process({ Exchange ex ->
- *                     Integer httpAnswerCode = ex.in.getHeader(Exchange.HTTP_RESPONSE_CODE, Integer)
- *                     ex.setProperty("answerHttpCode", httpAnswerCode)
- *                     MultisubscriptionOrderParameters parameters = ex.getProperty("ps.crab.wf.context.inputOrderParameters", MultisubscriptionOrderParameters)
- *                     List<String> bssTechnicalId = ex.getProperty("ps.crab.wf.context.bssTechnicalId", ArrayList.class)
- *                     def answerBody = mapper.readValue(ex.in.getBody(String), BssCheckResponseAnswer)
- *                     if (httpAnswerCode == 200) {
- *                         if (bssTechnicalId.size() == answerBody.listInfo.count) {
- *                             for (BssCheckItems e : answerBody.items) {
- *                                 parameters.addedProviderInstanceIdInContextMap(e.productOfferingId, e.productId)
- *                             }
- *                             ex.setProperty("ps.crab.wf.context.inputOrderParameters", parameters)
- *                             CommonScenarioHelper.prepareStatement(ex, "DONE", mapper.valueToTree(answerBody))
- *                         } else if (bssTechnicalId.size() != answerBody.listInfo.count) {
- *                             ex.setProperty("ps.crab.wf.context.rollbackVasp", true)
- *                             CommonScenarioHelper.prepareStatement(ex, "ERROR", "Missing productOfferingIds")
- *                         }
- *                     } else {
- *                         String status = (httpAnswerCode == 500) ? "FAIL" : "ERROR"
- *                         CommonScenarioHelper.prepareErrorModel(ex, "BSS")
- *                         ex.setProperty("ps.crab.wf.context.rollbackVasp", true)
- *                         CommonScenarioHelper.prepareStatement(ex, status, mapper.valueToTree(answerBody))
- *                     }
- *                 }
- *                 )
- *
- *
- *     }
- * }
- */
 }

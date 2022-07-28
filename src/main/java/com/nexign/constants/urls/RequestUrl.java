@@ -13,6 +13,7 @@ public class RequestUrl {
     public static final String PROMOCODE_INVENTORY_BOOKING = "/promoTicket/assign";
     public static final String PROMOCODE_INVENTORY_ACTIVATE = "/promoTicket/updateSingle";
 
+
     public static String getPromoCodeUrl(String action){
         return "http://localhost:3333/api/partner/promocode-inventory-app/v2".concat(action);
     }
@@ -33,13 +34,20 @@ public class RequestUrl {
         return UriComponentsBuilder.fromUriString(url).queryParams(params).build().toUriString();
     }
 
-    public static MultiValueMap getBaseHeadersMap (){
+    public static MultiValueMap getBaseQueryMap (){
         MultiValueMap<String,String> baseHeaders = new HttpHeaders();
         baseHeaders.add("APPL_CODE","CRAB");
         baseHeaders.add("LOGIN","CRAB");
         return baseHeaders;
     }
-    public static String getBssUrl(MultisubscriptionOrderParameters parameters) {
+    public static String getBssActivateUrl(MultisubscriptionOrderParameters parameters) {
         return String.format("%s/openapi/v2/subscribers/msisdn:%s/productOfferings/activate/bulk", "http://localhost:3333",parameters.getRelatedParties().getMsisdn());
+    }
+
+    public static String getBssCheckProductUrl(MultisubscriptionOrderParameters parameters){
+        String msisdn = String.valueOf(parameters.getRelatedParties().getContactMsisdn());
+        String url = "http://%s/openapi/v2/subscribers/msisdn:%s/products/search";
+        //String query = "LOGIN=${oapiLogin}&APPL_CODE=${applCode}"
+        return url;
     }
 }
