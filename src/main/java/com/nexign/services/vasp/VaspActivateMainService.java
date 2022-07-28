@@ -1,29 +1,21 @@
 package com.nexign.services.vasp;
 
 import com.nexign.constants.process.variables.OrderContextConstants;
-import com.nexign.constants.process.variables.ScenarioConstantCodes;
 import com.nexign.constants.urls.RequestUrl;
 import com.nexign.dto.common.FabricActionMap;
 import com.nexign.dto.order.context.MultisubscriptionOrderParameters;
-import com.nexign.dto.promocode_inventory.dto.PromoCodeActivateResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import static com.nexign.constants.process.variables.ScenarioConstantCodes.VASP_SUCCESS_CODES;
-import static com.nexign.constants.urls.RequestUrl.PROMOCODE_INVENTORY_ACTIVATE;
-import static com.nexign.constants.urls.RequestUrl.getPromoCodeUrl;
 
 @Service
 @RequiredArgsConstructor

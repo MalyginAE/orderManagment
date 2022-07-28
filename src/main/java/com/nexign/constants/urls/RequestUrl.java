@@ -46,9 +46,9 @@ public class RequestUrl {
         return UriComponentsBuilder.fromUriString(url).queryParams(params).build().toUriString();
     }
 
-    public static MultiValueMap getBaseQueryMap (){
+    public static MultiValueMap getSsoQueryMap(){
         MultiValueMap<String,String> ssoQueryPrams = new HttpHeaders();
-        ssoQueryPrams.add("APPL_CODE","CRAB");
+        ssoQueryPrams.add("APP1_CODE","CRAB");
         ssoQueryPrams.add("LOGIN","CRAB");
         return ssoQueryPrams;
     }
@@ -57,9 +57,9 @@ public class RequestUrl {
     }
 
     public static String getBssCheckProductUrl(MultisubscriptionOrderParameters parameters){
+        String domain = "localhost:3000";
         String msisdn = String.valueOf(parameters.getRelatedParties().getContactMsisdn());
-        String url = "http://%s/openapi/v2/subscribers/msisdn:%s/products/search";
-        //String query = "LOGIN=${oapiLogin}&APPL_CODE=${applCode}"
-        return url;
+        String url = String.format("http://%s/openapi/v2/subscribers/msisdn:%s/products/search",domain,msisdn);
+        return getUrl(url, getSsoQueryMap());
     }
 }
