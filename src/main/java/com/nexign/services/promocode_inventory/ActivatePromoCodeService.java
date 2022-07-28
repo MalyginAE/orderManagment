@@ -6,6 +6,7 @@ import com.nexign.dto.order.context.PromoCodeDataModel;
 import com.nexign.dto.promocode_inventory.dto.PromoCodeActivateResponseDto;
 import com.nexign.dto.promocode_inventory.dto.PromoCodeInventoryActivateRequestBodyDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -20,15 +21,16 @@ import static com.nexign.constants.urls.RequestUrl.PROMOCODE_INVENTORY_ACTIVATE;
 import static com.nexign.constants.urls.RequestUrl.getPromoCodeUrl;
 
 @Service
+@Slf4j
 public record ActivatePromoCodeService(WebClient webClient) {
     public PromoCodeActivateResponseDto requestToActivate(MultisubscriptionOrderParameters parameters) {
+        log.info("requestToActivatePromoCode invoked");
         return prepareRequest(prepareRequestBody(parameters)).block();
     }
 
 
     private PromoCodeInventoryActivateRequestBodyDto prepareRequestBody(MultisubscriptionOrderParameters parameters) {
         PromoCodeDataModel promoCodeDataModel = parameters.getPromoCodeData();
-
         MultisubscriptionRelatedParties relatedParties = parameters.getRelatedParties();
         return new PromoCodeInventoryActivateRequestBodyDto(
                 promoCodeDataModel.getRefName(),
@@ -39,6 +41,7 @@ public record ActivatePromoCodeService(WebClient webClient) {
 
 
     private Mono<PromoCodeActivateResponseDto> prepareRequest(PromoCodeInventoryActivateRequestBodyDto model) {
+
         return webClient.post().
                 uri(getPromoCodeUrl(PROMOCODE_INVENTORY_ACTIVATE)).
                 accept(MediaType.APPLICATION_JSON).
