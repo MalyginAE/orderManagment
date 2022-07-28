@@ -30,15 +30,27 @@ public class RequestUrl {
         return PARTNER_SERVICES_URL;
     }
 
-    public String getUrl(String url, MultiValueMap<String, String> params) {
+    public static String getVaspUrl(String action, String msisdn, String technicalId) {
+        String vaspDomain = "localhost:3000";
+        MultiValueMap<String,String> queryParams = new HttpHeaders();
+        queryParams.add("serviceid",technicalId);
+        queryParams.add("msisdn",msisdn);
+        queryParams.add("status",action);
+
+        String url = String.format("http://%s/cpapsm/api/cp/v1/subscription/",vaspDomain);
+
+        return getUrl(url,queryParams);
+    }
+
+    public static String getUrl(String url, MultiValueMap<String, String> params) {
         return UriComponentsBuilder.fromUriString(url).queryParams(params).build().toUriString();
     }
 
     public static MultiValueMap getBaseQueryMap (){
-        MultiValueMap<String,String> baseHeaders = new HttpHeaders();
-        baseHeaders.add("APPL_CODE","CRAB");
-        baseHeaders.add("LOGIN","CRAB");
-        return baseHeaders;
+        MultiValueMap<String,String> ssoQueryPrams = new HttpHeaders();
+        ssoQueryPrams.add("APPL_CODE","CRAB");
+        ssoQueryPrams.add("LOGIN","CRAB");
+        return ssoQueryPrams;
     }
     public static String getBssActivateUrl(MultisubscriptionOrderParameters parameters) {
         return String.format("%s/openapi/v2/subscribers/msisdn:%s/productOfferings/activate/bulk", "http://localhost:3333",parameters.getRelatedParties().getMsisdn());
