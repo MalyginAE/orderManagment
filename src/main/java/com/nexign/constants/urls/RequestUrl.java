@@ -27,6 +27,7 @@ public class RequestUrl {
 
 
 
+
     public  String getPromoCodeUrl(String action){
         String url =String.format("http://%s/api/partner/promocode-inventory-app/v2%s",promoCodeInventoryProperties.getDomain(),action);
         return getUrl(url,getSsoQueryMap());
@@ -66,9 +67,15 @@ public class RequestUrl {
         ssoQueryPrams.add("LOGIN","CRAB");
         return ssoQueryPrams;
     }
-    public static String getBssActivateUrl(MultisubscriptionOrderParameters parameters) {
-        return String.format("%s/openapi/v2/subscribers/msisdn:%s/productOfferings/activate/bulk", "http://localhost:3333",parameters.getRelatedParties().getMsisdn());
-    }
+    public  String getBssActivateUrl(MultisubscriptionOrderParameters parameters, String correlationId) {
+        String domain = bssProperties.getDomain();
+        MultiValueMap<String,String> queryParams = getSsoQueryMap();
+        queryParams.add("correlationId",correlationId);
+        queryParams.add("replyTo",bssProperties.getAmqpCallback());
+        String url =  String.format("http://%s/openapi/v2/subscribers/msisdn:%s/productOfferings/activate/bulk", domain,parameters.getRelatedParties().getMsisdn());
+
+        return getUrl(url,queryParams);
+        }
 
     public static String getBssCheckProductUrl(MultisubscriptionOrderParameters parameters){
         String domain = "localhost:3000";

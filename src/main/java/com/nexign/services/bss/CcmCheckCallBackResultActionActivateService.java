@@ -32,8 +32,7 @@ public class CcmCheckCallBackResultActionActivateService {
                 callback.getOrderEntities().forEach(orderEntity -> {
                     if (bssTechnicalId.stream().anyMatch(it -> it.equals(orderEntity.getProductOfferingId()))
                             && orderEntity.getAction().toLowerCase().equals("add")) {
-                        parameters.addedProviderInstanceIdInContextMap(orderEntity.getProductOfferingId().toString(),orderEntity.getProductId().toString())
-                        //todo добавиь в контекстную мапу
+                        parameters.addedProviderInstanceIdInContextMap(orderEntity.getProductOfferingId().toString(),orderEntity.getProductId().toString());
                     }
                 });
             } else {

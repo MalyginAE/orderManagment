@@ -17,7 +17,6 @@ public class ParseDataToPOJO extends AbstractDelegate {
     @Override
     public void run(DelegateExecution execution) {
         log.info("ParseDataToPOJO invoked ");
-        System.out.println(1);
         CommonOrder inputOrder = (CommonOrder) execution.getVariable(INPUT_ORDER);
         Order pojo = new ParseInputOrder(inputOrder);
         MultisubscriptionOrderParameters orderParameters = MultisubscriptionOrderParameters.builder()
@@ -30,7 +29,6 @@ public class ParseDataToPOJO extends AbstractDelegate {
                 .priceRelatedItems(pojo.getPriceRelatedItems())
                 .channels(pojo.getMultisubscriptionChannels())
                 .build();
-        System.out.println(pojo.getPromoCodeData() != null);
         execution.setVariable(IS_PROMOCODE_EXISTS,pojo.getPromoCodeData() != null);
         execution.setVariable(ORDER_PARAMETERS, orderParameters);
     }

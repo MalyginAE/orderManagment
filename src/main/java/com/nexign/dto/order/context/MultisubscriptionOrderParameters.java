@@ -39,10 +39,21 @@ public class MultisubscriptionOrderParameters {
         });
     }
 
-//    MultisubscriptionComponentOrderParameter findComponentOrder(String technicalId) {
-//        String productOfferingId =  contextMap.find {it.value.find({it.fabricProductOfferingId == technicalId})}.key
-//        return affectedComponentOrders.find({it.productOfferingId == productOfferingId})
-//    }
+    MultisubscriptionComponentOrderParameter findComponentOrder(String technicalId) {
+        String productOfferingId = "";
+        for (Map.Entry<String, List<MultisubscriptionAdditionalMappingContext>> entry : contextMap.entrySet()) {
+            if (entry.getValue().stream().anyMatch(it -> it.fabricProductOfferingId.equals(technicalId))){
+                productOfferingId = entry.getKey();
+                break;
+            }
+        }
+        for (MultisubscriptionComponentOrderParameter componentOrder : affectedComponentOrders) {
+            if (componentOrder.getProductOfferingId().equals(productOfferingId)){
+                return componentOrder;
+            }
+        }
+        return null;
+    }
 }
 
 

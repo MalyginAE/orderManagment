@@ -1,5 +1,6 @@
 package com.nexign.services.bss;
 
+import com.nexign.constants.urls.RequestUrl;
 import com.nexign.dto.bss.*;
 import com.nexign.dto.common.FabricActionMap;
 import com.nexign.dto.order.context.MultisubscriptionOrderParameters;
@@ -18,7 +19,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static com.nexign.constants.process.variables.OrderContextConstants.*;
-import static com.nexign.constants.urls.RequestUrl.getBssActivateUrl;
 import static com.nexign.constants.urls.RequestUrl.getBssCheckProductUrl;
 
 
@@ -26,33 +26,31 @@ import static com.nexign.constants.urls.RequestUrl.getBssCheckProductUrl;
 @RequiredArgsConstructor
 public class CcmProductOfferingBulkActivateService {
     private final WebClient webClient;
+    private final RequestUrl requestUrl;
 
 
     public CcmProductOfferingBulcActivateResponceBodyDto createRequest(DelegateExecution execution) {
+        String correlationId = String.format("%s_%s_%s", execution.getProcessInstanceId(), "startEvent", "activate");
         List<String> technicalId = (List<String>) execution.getVariable(BSS_TECHNICAL_ID);
-        includeActionMapInContext(execution);
+        includeActionMapInContext(execution,correlationId);
         ProductOfferingBulkActivateRequestBodyDto bodyDto = prepareRequestBodyToActivate(technicalId);
-        return prepareRequestToActivate(bodyDto, execution).block();
-// TODO: 27.07.2022
-//LOGIN=${oapiLogin}&APPL_CODE=${applCode}&correlationId=${correlationId}&replyTo=${replyTo}
-
-
+        return prepareRequestToActivate(bodyDto, execution,correlationId).block();
     }
 
-    private void includeActionMapInContext(DelegateExecution execution) {
+    private void includeActionMapInContext(DelegateExecution execution,String correlationId) {
         List<FabricActionMap> actionMap = (List<FabricActionMap>) execution.getVariable(BSS_ACTION_MAP);
-        actionMap = (actionMap == null) ? new ArrayList<>() : actionMap;
+        //actionMap = (actionMap == null) ? new ArrayList<>() : actionMap;
         List<String> technicalId = (List<String>) execution.getVariable(BSS_TECHNICAL_ID);
-        String correlationId = String.format("%s_%s_%s", execution.getProcessInstanceId(), "startEvent", "activate");
+
         for (String s : technicalId) {
             actionMap.add(new FabricActionMap(s, correlationId, "PENDING_ACTIVATE"));
         }
     }
 
-    private Mono<CcmProductOfferingBulcActivateResponceBodyDto> prepareRequestToActivate(ProductOfferingBulkActivateRequestBodyDto model, DelegateExecution execution) {
+    private Mono<CcmProductOfferingBulcActivateResponceBodyDto> prepareRequestToActivate(ProductOfferingBulkActivateRequestBodyDto model, DelegateExecution execution, String correlationId) {
         MultisubscriptionOrderParameters parameters = (MultisubscriptionOrderParameters) execution.getVariable(ORDER_PARAMETERS);
         return webClient.post().
-                uri(getBssActivateUrl(parameters)).
+                uri(requestUrl.getBssActivateUrl(parameters,correlationId)).
                 accept(MediaType.APPLICATION_JSON).
                 bodyValue(model).
                 exchangeToMono(response -> {
