@@ -1,7 +1,6 @@
 package com.nexign.services.ng_psi;
 
 import com.nexign.dto.ng_psi.*;
-import com.nexign.dto.order.context.MultisubscriptionComponentOrderParameter;
 import com.nexign.dto.order.context.MultisubscriptionOrderParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,7 +12,6 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -21,11 +19,12 @@ import static com.nexign.constants.urls.RequestUrl.getProductInventoryUrl;
 
 @Service
 @RequiredArgsConstructor
+
 public class ProductInventoryCreateProductService {
     private final WebClient webClient;
 
     public ProductInventoryActivationStartedResponseBodyDto createActivationStartedRequest(MultisubscriptionOrderParameters parameters) {
-        return prepareRequestToActivate(prepareRequestBodyActivationStarted(parameters)).block();
+        return prepareRequestToActivationStarted(prepareRequestBodyActivationStarted(parameters)).block();
     }
 
     private ProductInventoryActivationStartedPrepareRequestBodyDto prepareRequestBodyActivationStarted(MultisubscriptionOrderParameters parameters) {
@@ -47,24 +46,26 @@ public class ProductInventoryCreateProductService {
     private List<ProductInventoryProductItem> getProductOrderItems(MultisubscriptionOrderParameters parameters) {
         List<ProductInventoryProductItem> productItemList = new ArrayList<>();
         parameters.getAffectedComponentOrders().forEach(component -> {
-            productItemList.add(new ProductInventoryProductItem(
-                    component.getOrderItemId(),
-                    null,
-                    component.getType().equals("bundle"),
-                    component.getProductOfferingId(),
-                    component.getProductOfferingName(),
-                    (component.getType().equals("bundle") && parameters.getPromoCodeData() != null) ? Collections.singletonList(parameters.getPromoCodeData()) : null,
-                    (parameters.getProductPriceData() != null && parameters.getProductPriceData().getMainComponentOrderId().equals(component.getComponentOrderId())) ?
-                            parameters.getProductPriceData().getPriceValue() : null,
-                    null,
-                    component.getProductOrderItemRelationship(),
-                    null
-            ));
+            productItemList.add(
+                    ProductInventoryProductItem
+                            .builder()
+                            .productOrderItemId(component.getOrderItemId())
+                            .isBundle(component.getType().equals("bundle"))
+                            .productOfferingId(component.getProductOfferingId())
+                            .productOfferingName(component.getProductOfferingName())
+                            .characteristic((component.getType().equals("bundle")
+                                    && parameters.getPromoCodeData() != null) ? List.of(parameters.getPromoCodeData()) : null)
+                            .productPrice((parameters.getProductPriceData() != null && parameters.getProductPriceData().getMainComponentOrderId().equals(component.getComponentOrderId())) ?
+                                    parameters.getProductPriceData().getPriceValue() : null)
+                            .productOrderItemRelationship(component.getProductOrderItemRelationship())
+                            .build()
+            );
+
         });
         return productItemList;
     }
 
-    private Mono<ProductInventoryActivationStartedResponseBodyDto> prepareRequestToActivate(ProductInventoryActivationStartedPrepareRequestBodyDto model) {
+    private Mono<ProductInventoryActivationStartedResponseBodyDto> prepareRequestToActivationStarted(ProductInventoryActivationStartedPrepareRequestBodyDto model) {
         return webClient.post().
                 uri(getProductInventoryUrl("event")).
                 accept(MediaType.APPLICATION_JSON).
@@ -80,11 +81,11 @@ public class ProductInventoryCreateProductService {
                 .retryWhen(Retry.fixedDelay(4, Duration.ofSeconds(5)));
     }
 
-    public void saveInstanceIdInComponentOrders(MultisubscriptionOrderParameters parameters,ProductInventoryActivationStartedResponseBodyDto responseBodyDto) {
-        responseBodyDto.getProducts().forEach( product -> {
-            parameters.getAffectedComponentOrders().forEach( x -> {
+    public void saveInstanceIdInComponentOrders(MultisubscriptionOrderParameters parameters, ProductInventoryActivationStartedResponseBodyDto responseBodyDto) {
+        responseBodyDto.getProducts().forEach(product -> {
+            parameters.getAffectedComponentOrders().forEach(x -> {
                 if (x.getProductOfferingId().equals(product.getProductOfferingId()))
-                    x.getInstance().setInstanceId( product.getProductId());
+                    x.getInstance().setInstanceId(product.getProductId());
             });
 //            for (int i = 0; i < parameters.getAffectedComponentOrders().size(); i++) {
 //                MultisubscriptionComponentOrderParameter parameter = parameters.getAffectedComponentOrders().get(i);

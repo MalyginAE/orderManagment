@@ -2,10 +2,12 @@ package com.nexign.dto.ng_psi;
 
 import com.nexign.dto.order.context.ProductInventoryProductItemProductOrderItemRelationship;
 import com.nexign.dto.order.context.PromoCodeDataModel;
+import lombok.Builder;
 import lombok.Value;
 
 import java.util.List;
 @Value
+@Builder
 public class ProductInventoryProductItem {
     String productOrderItemId;
     String productId;

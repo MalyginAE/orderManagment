@@ -1,5 +1,6 @@
 package com.nexign.services.promocode_inventory;
 
+import com.nexign.constants.urls.RequestUrl;
 import com.nexign.dto.order.context.MultisubscriptionOrderParameters;
 import com.nexign.dto.order.context.MultisubscriptionRelatedParties;
 import com.nexign.dto.order.context.PromoCodeDataModel;
@@ -17,12 +18,11 @@ import java.time.Duration;
 import java.util.function.Supplier;
 
 import static com.nexign.constants.urls.RequestUrl.PROMOCODE_INVENTORY_BOOKING;
-import static com.nexign.constants.urls.RequestUrl.getPromoCodeUrl;
 @RequiredArgsConstructor
 @Service
 public class BookingPromoCodeService  {
 
-
+    private final RequestUrl requestUrl;
     private final WebClient webClient;
 
     public PromoCodeBookingResponseDto requestToBooking(MultisubscriptionOrderParameters parameters){
@@ -43,7 +43,7 @@ public class BookingPromoCodeService  {
 
     private Mono<PromoCodeBookingResponseDto> prepareRequest(PromoCodeInventoryBookingRequestBodyDto model) {
         return webClient.post().
-                uri(getPromoCodeUrl(PROMOCODE_INVENTORY_BOOKING)).
+                uri(requestUrl.getPromoCodeUrl(PROMOCODE_INVENTORY_BOOKING)).
                 accept(MediaType.APPLICATION_JSON).
                 bodyValue(model).
                 exchangeToMono(response -> {

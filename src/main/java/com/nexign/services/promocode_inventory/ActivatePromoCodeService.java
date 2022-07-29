@@ -1,11 +1,13 @@
 package com.nexign.services.promocode_inventory;
 
+import com.nexign.constants.urls.RequestUrl;
 import com.nexign.dto.order.context.MultisubscriptionOrderParameters;
 import com.nexign.dto.order.context.MultisubscriptionRelatedParties;
 import com.nexign.dto.order.context.PromoCodeDataModel;
 import com.nexign.dto.promocode_inventory.dto.PromoCodeActivateResponseDto;
 import com.nexign.dto.promocode_inventory.dto.PromoCodeInventoryActivateRequestBodyDto;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -17,11 +19,12 @@ import java.time.Duration;
 import java.util.function.Supplier;
 
 import static com.nexign.constants.urls.RequestUrl.PROMOCODE_INVENTORY_ACTIVATE;
-import static com.nexign.constants.urls.RequestUrl.getPromoCodeUrl;
+
 
 @Service
 @Slf4j
-public record ActivatePromoCodeService(WebClient webClient) {
+public record ActivatePromoCodeService(WebClient webClient,RequestUrl requestUrl) {
+
     public PromoCodeActivateResponseDto requestToActivate(MultisubscriptionOrderParameters parameters) {
         log.info("requestToActivatePromoCode invoked");
         return prepareRequest(prepareRequestBody(parameters)).block();
@@ -42,7 +45,7 @@ public record ActivatePromoCodeService(WebClient webClient) {
     private Mono<PromoCodeActivateResponseDto> prepareRequest(PromoCodeInventoryActivateRequestBodyDto model) {
 
         return webClient.post().
-                uri(getPromoCodeUrl(PROMOCODE_INVENTORY_ACTIVATE)).
+                uri(requestUrl.getPromoCodeUrl(PROMOCODE_INVENTORY_ACTIVATE)).
                 accept(MediaType.APPLICATION_JSON).
                 bodyValue(model).
                 exchangeToMono(response -> {

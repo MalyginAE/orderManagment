@@ -1,10 +1,15 @@
 package com.nexign.constants.urls;
 
+import com.nexign.config.properties.*;
 import com.nexign.dto.order.context.MultisubscriptionOrderParameters;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
-
+@Component
+@RequiredArgsConstructor
 public class RequestUrl {
     public static final String PARTNER_SERVICES_URL = "/api/partner/uni-pmp/v1/call";
     public static final String MULTIMAPPER_QUERY_PATH = "/api/catalog/ng-fpc-mmapperapp/v1/conversions";
@@ -13,9 +18,18 @@ public class RequestUrl {
     public static final String PROMOCODE_INVENTORY_BOOKING = "/promoTicket/assign";
     public static final String PROMOCODE_INVENTORY_ACTIVATE = "/promoTicket/updateSingle";
 
+    private final BssProperties bssProperties;
+    private final OAPIProperties oapiProperties;
+    private final PartnerServiceProperties partnerServiceProperties;
+    private final PromoCodeInventoryProperties promoCodeInventoryProperties;
+    private final SsoProperties ssoProperties;
+    private final VaspProperties vaspProperties;
 
-    public static String getPromoCodeUrl(String action){
-        return "http://localhost:3333/api/partner/promocode-inventory-app/v2".concat(action);
+
+
+    public  String getPromoCodeUrl(String action){
+        String url =String.format("http://%s/api/partner/promocode-inventory-app/v2%s",promoCodeInventoryProperties.getDomain(),action);
+        return getUrl(url,getSsoQueryMap());
     }
 
     public static String getMultimapperUrl(){
@@ -30,8 +44,8 @@ public class RequestUrl {
         return PARTNER_SERVICES_URL;
     }
 
-    public static String getVaspUrl(String action, String msisdn, String technicalId) {
-        String vaspDomain = "localhost:3000";
+    public String getVaspUrl(String action, String msisdn, String technicalId) {
+        String vaspDomain = vaspProperties.getDomain();
         MultiValueMap<String,String> queryParams = new HttpHeaders();
         queryParams.add("serviceid",technicalId);
         queryParams.add("msisdn",msisdn);

@@ -21,6 +21,7 @@ import static com.nexign.constants.process.variables.ScenarioConstantCodes.VASP_
 @RequiredArgsConstructor
 public class VaspActivateMainService {
     private final WebClient webClient;
+    private final RequestUrl requestUrl;
 
     public void activateVaspProducts(DelegateExecution delegateExecution) {
         List<String> tecgnicalIds = (List<String>) delegateExecution.getVariable(OrderContextConstants.VASP_TECHNICAL_ID);
@@ -38,7 +39,7 @@ public class VaspActivateMainService {
     }
 
     private void todoRequest(String msisdn, String technicalId,List<FabricActionMap> actionMap) {
-        webClient.post().uri(RequestUrl.getVaspUrl("new", msisdn, technicalId)).retrieve()
+        webClient.post().uri(requestUrl.getVaspUrl("new", msisdn, technicalId)).retrieve()
                 .onStatus(x -> !VASP_SUCCESS_CODES.contains(x.value()), ClientResponse::createException)
                 .toBodilessEntity()
                 .retryWhen(Retry.fixedDelay(4, Duration.ofSeconds(5))).block();

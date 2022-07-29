@@ -5,14 +5,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.Min;
-
-@ConfigurationProperties(prefix ="vasp")
+@ConfigurationProperties(prefix ="partner-service")
 @ConstructorBinding
 @Validated
 @Value
-public class VaspProperties {
-    @Min(2)
-    String domain ="localhost:3000";
-
+public class PartnerServiceProperties {
 }

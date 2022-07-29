@@ -20,7 +20,13 @@ public class MultisubscriptionOrderParameters {
     List<RelatedItem> priceRelatedItems;
     ProductPricePromoData productPriceData;
     Map<String, List<MultisubscriptionAdditionalMappingContext>> contextMap;
+
+
+    public List<MultisubscriptionAdditionalMappingContext> getProductContextMap(String productOfferingId) {
+        return contextMap.get(productOfferingId);
+    }
 }
+
 
 @Data
 class MultisubscriptionSpecification {
