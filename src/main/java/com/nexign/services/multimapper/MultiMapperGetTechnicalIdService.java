@@ -1,5 +1,6 @@
 package com.nexign.services.multimapper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nexign.constants.process.variables.OrderContextConstants;
 import com.nexign.dto.multimapper.dto.ConvertedItem;
 import com.nexign.dto.multimapper.dto.MultimapperConversionRequestBody;
@@ -9,6 +10,7 @@ import com.nexign.dto.order.context.MultisubscriptionAdditionalMappingContext;
 import com.nexign.dto.order.context.MultisubscriptionOrderParameters;
 import com.nexign.utils.parsing.multimapper.PrepareRequestBodyUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
+
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -28,8 +31,9 @@ import static com.nexign.constants.urls.RequestUrl.getMultimapperUrl;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MultiMapperGetTechnicalIdService {
-
+    private final ObjectMapper mapper;
     private final WebClient webClient;
 
     public MultimapperResponseBodyDto getResponseWithTechnicalIdFromMultiMapper(DelegateExecution delegateExecution) {
@@ -91,6 +95,9 @@ public class MultiMapperGetTechnicalIdService {
                 }
             });
         });
+        delegateExecution.setVariable(VASP_ACTION_MAP,new ArrayList<>());
+        delegateExecution.setVariable(BSS_ACTION_MAP,new ArrayList<>());
+        delegateExecution.setVariable(PS_ACTION_MAP,new ArrayList<>());
         delegateExecution.setVariable(BSS_TECHNICAL_ID,bssTechnicalId);
         delegateExecution.setVariable(PS_TECHNICAL_ID,psTechnicalId);
         delegateExecution.setVariable(VASP_TECHNICAL_ID,vaspTechnicalId);

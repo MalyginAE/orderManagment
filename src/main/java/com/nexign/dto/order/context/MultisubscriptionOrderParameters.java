@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Data
 @AllArgsConstructor
@@ -25,6 +26,23 @@ public class MultisubscriptionOrderParameters {
     public List<MultisubscriptionAdditionalMappingContext> getProductContextMap(String productOfferingId) {
         return contextMap.get(productOfferingId);
     }
+
+    public void addedProviderInstanceIdInContextMap(String productOfferingId, String productId) {
+        contextMap.forEach((k, v) -> {
+            if (v.stream().anyMatch(it -> it.equals(productOfferingId))) {
+                for (int i = 0; i < v.size(); i++) {
+                    if (v.get(i).equals(productOfferingId)) {
+                        v.get(i).fabricProductId = productId;
+                    }
+                }
+            }
+        });
+    }
+
+//    MultisubscriptionComponentOrderParameter findComponentOrder(String technicalId) {
+//        String productOfferingId =  contextMap.find {it.value.find({it.fabricProductOfferingId == technicalId})}.key
+//        return affectedComponentOrders.find({it.productOfferingId == productOfferingId})
+//    }
 }
 
 

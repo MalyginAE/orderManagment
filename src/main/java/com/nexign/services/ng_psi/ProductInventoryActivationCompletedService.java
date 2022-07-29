@@ -1,5 +1,6 @@
 package com.nexign.services.ng_psi;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nexign.constants.process.variables.OrderContextConstants;
 import com.nexign.dto.ng_psi.ProductInventoryActivationCompletedRequestBodyDto;
 import com.nexign.dto.ng_psi.ProductInventoryActivationStartedPrepareRequestBodyDto;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
-import spinjar.com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import java.time.Duration;
 import java.util.function.Supplier;
